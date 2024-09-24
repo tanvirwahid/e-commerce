@@ -16,11 +16,10 @@ class RoleMiddleware
      */
     public function handle($request, Closure $next, ...$roles): Response
     {
-        Log::info($request->user());
         if (!$request->user() || !$request->user()->hasAnyRole($roles)) {
             return response()->json(['message' => 'Unauthorized'], 403);
         }
-    
+
         return $next($request);
     }
 }
