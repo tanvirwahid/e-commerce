@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Apis;
 
+use App\Actions\Orders\ListAuthenticatedUsersOrdersAction;
 use App\Actions\Orders\PlaceOrderAction;
 use App\DTO\OrderData;
 use App\Exceptions\NotEnoughInStockException;
@@ -12,15 +13,21 @@ use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
+    public function index(ListAuthenticatedUsersOrdersAction $action)
+    {
+        return response()->json([
+            'orders' => $action->execute(),
+            'message' => 'Successfully fetched'
+        ]);
+    }
+
     public function store(OrderCreationRequest $request, PlaceOrderAction $orderAction)
     {
         try {
-            $order = $orderAction->execute(
-                OrderData::fromRequest($request)
-            );
-
             return response()->json([
-                'order' => $order,
+                'order' => $orderAction->execute(
+                    OrderData::fromRequest($request)
+                ),
                 'message' => 'Successfully ordered'
             ]);
         } catch (NotEnoughInStockException $exception) {

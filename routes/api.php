@@ -26,6 +26,7 @@ Route::group([
         'middleware' => 'role:user',
         'prefix' => 'orders'
     ], function () {
+        Route::get('', [OrderController::class, 'index']);
         Route::post('', [OrderController::class, 'store']);
     });
 

@@ -39,7 +39,7 @@ class InsertOrderItemsAction
         $this->productRepository->decreaseStock($stockChange , array_keys($stockChange));
     }
 
-    private function validateStock($orderItem, $idToProductMapping)
+    private function validateStock($orderItem, array $idToProductMapping)
     {
         $product = $idToProductMapping[$orderItem->product_id];
 
@@ -51,7 +51,7 @@ class InsertOrderItemsAction
         }
     }
 
-    private function mapOrderItem(int $orderId, $orderItem, $idToProductMapping): array
+    private function mapOrderItem(int $orderId, $orderItem, array $idToProductMapping): array
     {
         return [
             'order_id' => $orderId,

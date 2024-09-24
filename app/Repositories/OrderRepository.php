@@ -8,6 +8,11 @@ use App\Models\Order;
 
 class OrderRepository implements OrderRepositoryInterface
 {
+    public function getAuthenticatedUsersOrders()
+    {
+        return Order::self()->with('items')->paginate(10);
+    }
+
     public function create(OrderData $orderData): Order
     {
         return Order::create([
