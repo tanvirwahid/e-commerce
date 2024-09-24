@@ -2,36 +2,54 @@
 
 namespace App\Http\Controllers\Apis\Auth;
 
+use App\Actions\Auth\LoginAction;
 use App\Actions\Users\UserCreationAction;
+use App\DTO\Auth\LoginData;
 use App\DTO\UserData;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
+use App\Traits\Auth\TokenResponseTrait;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
+    use TokenResponseTrait;
+
+    public function __construct(
+        private LoginAction $loginAction
+    )
+    {
+    }
+
     public function register(
         RegistrationRequest $request,
         UserCreationAction  $userCreationAction
-    )
+    ) {
+
+        $user = $userCreationAction->execute(
+            UserData::fromRequest($request)
+        );
+
+        return response()->json($user, JsonResponse::HTTP_CREATED);
+    }
+
+    public function login(LoginRequest $request)
     {
-        try {
-            $user = $userCreationAction->execute(
-                UserData::fromRequest($request)
-            );
+        return $this->loginAction->execute(
+            LoginData::fromRequest($request)
+        );
+    }
 
-            return response()->json([
-                'user' => $user,
-                'message' => 'Registration Successfull'
-            ], JsonResponse::HTTP_CREATED);
-        } catch (\Throwable $exception) {
-            Log::error($exception->getMessage());
+    public function logout()
+    {
+        auth()->logout();
+        return response()->json(['message' => 'Successfully logged out']);
+    }
 
-            return response()->json([
-                'data' => [],
-                'message' => $exception->getMessage()
-            ], $exception->status ?? JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
-        }
+    public function refresh()
+    {
+        return $this->respondWithToken(auth()->fromUser(auth()->user()));
     }
 }
