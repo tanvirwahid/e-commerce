@@ -16,4 +16,10 @@ class UserRepository implements UserRepositoryInterface
             'password' => $data->password
         ]);
     }
+
+    public function assignRole(User $user, string $role): User
+    {
+        $user->assignRole($role);
+        return $user;
+    }
 }

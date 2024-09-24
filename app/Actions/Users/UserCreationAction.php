@@ -5,6 +5,7 @@ namespace App\Actions\Users;
 use App\Contracts\Repositories\UserRepositoryInterface;
 use App\DTO\UserData;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 
 class UserCreationAction
 {
@@ -14,8 +15,14 @@ class UserCreationAction
     {
     }
 
-    public function execute(UserData $userData): User
+    public function execute(UserData $userData, string $role): User
     {
-        return $this->userRepository->create($userData);
+        return DB::transaction(function() use ($userData, $role) {
+            return $this->userRepository
+                ->assignRole(
+                    $this->userRepository->create($userData),
+                    $role
+                );
+        });
     }
 }

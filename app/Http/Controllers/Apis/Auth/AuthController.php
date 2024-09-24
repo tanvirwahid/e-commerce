@@ -10,13 +10,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Traits\Auth\TokenResponseTrait;
+
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
     use TokenResponseTrait;
-
+    
     public function __construct(
         private LoginAction $loginAction
     )
@@ -29,7 +29,8 @@ class AuthController extends Controller
     ) {
 
         $user = $userCreationAction->execute(
-            UserData::fromRequest($request)
+            UserData::fromRequest($request),
+            'user'
         );
 
         return response()->json($user, JsonResponse::HTTP_CREATED);
@@ -50,6 +51,6 @@ class AuthController extends Controller
 
     public function refresh()
     {
-        return $this->respondWithToken(auth()->fromUser(auth()->user()));
+        return $this->respondWithToken(auth()->refresh());
     }
 }
