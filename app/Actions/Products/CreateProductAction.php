@@ -10,9 +10,7 @@ class CreateProductAction
 {
     public function __construct(
         private ProductRepositoryInterface $productRepository
-    )
-    {
-    }
+    ) {}
 
     public function execute(ProductData $productData): Product
     {

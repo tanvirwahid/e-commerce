@@ -9,9 +9,7 @@ class DeleteProductAction
 {
     public function __construct(
         private ProductRepositoryInterface $productRepository
-    )
-    {
-    }
+    ) {}
 
     public function execute(Product $product)
     {

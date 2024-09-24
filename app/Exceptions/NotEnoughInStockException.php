@@ -8,7 +8,7 @@ class NotEnoughInStockException extends Exception
 {
     protected int $statusCode;
 
-    public function __construct(string $message = "", int $statusCode = 400, \Throwable $previous = null)
+    public function __construct(string $message = '', int $statusCode = 400, ?\Throwable $previous = null)
     {
         $this->statusCode = $statusCode;
         parent::__construct($message, 0, $previous);

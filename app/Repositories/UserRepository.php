@@ -13,13 +13,14 @@ class UserRepository implements UserRepositoryInterface
         return User::create([
             'name' => $data->name,
             'email' => $data->email,
-            'password' => $data->password
+            'password' => $data->password,
         ]);
     }
 
     public function assignRole(User $user, string $role): User
     {
         $user->assignRole($role);
+
         return $user;
     }
 }

@@ -11,13 +11,11 @@ class UserCreationAction
 {
     public function __construct(
         private UserRepositoryInterface $userRepository
-    )
-    {
-    }
+    ) {}
 
     public function execute(UserData $userData, string $role): User
     {
-        return DB::transaction(function() use ($userData, $role) {
+        return DB::transaction(function () use ($userData, $role) {
             return $this->userRepository
                 ->assignRole(
                     $this->userRepository->create($userData),

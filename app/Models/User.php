@@ -11,7 +11,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, HasRoles, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -56,7 +56,7 @@ class User extends Authenticatable implements JWTSubject
     {
         return [
             'name' => $this->name,
-            'roles' => $this->roles->pluck('name')->toArray()
+            'roles' => $this->roles->pluck('name')->toArray(),
         ];
     }
 }

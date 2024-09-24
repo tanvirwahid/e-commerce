@@ -15,6 +15,6 @@ class OrderItem extends Model
         'price',
         'quantity',
         'created_at',
-        'updated_at'
+        'updated_at',
     ];
 }

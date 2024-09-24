@@ -3,7 +3,6 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Log;
 
 class OrderCreationRequest extends FormRequest
 {
@@ -25,7 +24,7 @@ class OrderCreationRequest extends FormRequest
         return [
             'items' => 'array|required|min:1',
             'items.*.product_id' => 'required|exists:products,id',
-            'items.*.quantity' => 'required|integer|min:1'
+            'items.*.quantity' => 'required|integer|min:1',
         ];
     }
 }

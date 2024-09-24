@@ -4,14 +4,14 @@ use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
-use PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate;
 use Illuminate\Http\Request;
+use PHPOpenSourceSaver\JWTAuth\Http\Middleware\Authenticate;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 
 function getUnauthenticatedResponse()
 {
     return response()->json([
-        'message' => 'Not Logged in'
+        'message' => 'Not Logged in',
     ], 401);
 }
 
@@ -23,9 +23,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-          $middleware->alias([
+        $middleware->alias([
             'jwt.auth' => Authenticate::class,
-            'role' => RoleMiddleware::class
+            'role' => RoleMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

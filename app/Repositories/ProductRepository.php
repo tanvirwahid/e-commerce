@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function __construct(private Product $product)
-    {
-    }
+    public function __construct(private Product $product) {}
 
     public function index()
     {
@@ -23,7 +21,7 @@ class ProductRepository implements ProductRepositoryInterface
         return $this->product->create([
             'name' => $productData->name,
             'price' => $productData->price,
-            'stock' => $productData->stock
+            'stock' => $productData->stock,
         ]);
     }
 
@@ -57,8 +55,7 @@ class ProductRepository implements ProductRepositoryInterface
     {
         $caseStatements = '';
 
-        foreach ($stockData as $key => $value)
-        {
+        foreach ($stockData as $key => $value) {
             $caseStatements .= "WHEN id = {$key} THEN stock - {$value} ";
         }
 

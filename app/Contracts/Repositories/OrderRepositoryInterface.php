@@ -8,5 +8,6 @@ use App\Models\Order;
 interface OrderRepositoryInterface
 {
     public function getAuthenticatedUsersOrders();
+
     public function create(OrderData $orderData): Order;
 }

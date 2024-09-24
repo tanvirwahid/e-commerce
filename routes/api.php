@@ -1,21 +1,20 @@
 <?php
 
 use App\Http\Controllers\Apis\Auth\AuthController;
-use App\Http\Controllers\Apis\ProductController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Apis\OrderController;
+use App\Http\Controllers\Apis\ProductController;
+use Illuminate\Support\Facades\Route;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
 Route::get('/products', [ProductController::class, 'index']);
 
 Route::group([
-    'middleware' => 'jwt.auth'
+    'middleware' => 'jwt.auth',
 ], function () {
     Route::group([
         'middleware' => 'role:admin',
-        'prefix' => 'products'
+        'prefix' => 'products',
     ], function () {
         Route::post('', [ProductController::class, 'store']);
         Route::put('/{product}', [ProductController::class, 'update']);
@@ -24,7 +23,7 @@ Route::group([
 
     Route::group([
         'middleware' => 'role:user',
-        'prefix' => 'orders'
+        'prefix' => 'orders',
     ], function () {
         Route::get('', [OrderController::class, 'index']);
         Route::post('', [OrderController::class, 'store']);

@@ -10,22 +10,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Traits\Auth\TokenResponseTrait;
-
 use Illuminate\Http\JsonResponse;
 
 class AuthController extends Controller
 {
     use TokenResponseTrait;
-    
+
     public function __construct(
         private LoginAction $loginAction
-    )
-    {
-    }
+    ) {}
 
     public function register(
         RegistrationRequest $request,
-        UserCreationAction  $userCreationAction
+        UserCreationAction $userCreationAction
     ) {
 
         $user = $userCreationAction->execute(
@@ -46,6 +43,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->logout();
+
         return response()->json(['message' => 'Successfully logged out']);
     }
 

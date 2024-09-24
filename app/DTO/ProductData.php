@@ -10,9 +10,7 @@ class ProductData
         public string $name,
         public float $price,
         public int $stock
-    )
-    {
-    }
+    ) {}
 
     public static function fromRequest(Request $request): self
     {

@@ -12,12 +12,10 @@ use Illuminate\Support\Facades\DB;
 class PlaceOrderAction
 {
     public function __construct(
-        private OrderRepositoryInterface   $orderRepository,
-        private InsertOrderItemsAction     $insertOrderItemsAction,
+        private OrderRepositoryInterface $orderRepository,
+        private InsertOrderItemsAction $insertOrderItemsAction,
         private ProductRepositoryInterface $productRepository
-    )
-    {
-    }
+    ) {}
 
     public function execute(OrderData $orderData)
     {
@@ -45,7 +43,7 @@ class PlaceOrderAction
 
     private function extractProductIds(array $orderItems): array
     {
-        return array_map(fn($item) => $item->product_id, $orderItems);
+        return array_map(fn ($item) => $item->product_id, $orderItems);
     }
 
     private function calculateTotalAmount(array $orderItems, array $idToProductMapping): float
@@ -59,5 +57,4 @@ class PlaceOrderAction
     {
         return $this->orderRepository->create($orderData);
     }
-
 }

@@ -14,17 +14,14 @@ class InsertOrderItemsAction
     public function __construct(
         private ProductRepositoryInterface $productRepository,
         private OrderItemRepositoryInterface $orderItemRepository
-    )
-    {
-    }
+    ) {}
 
     public function execute(
         Order $order,
         /** @var OrderItemData[] */
         array $orderItems,
         array $idToProductMapping
-    )
-    {
+    ) {
         $stockChange = [];
         $orderItemsToCreate = [];
 
@@ -36,7 +33,7 @@ class InsertOrderItemsAction
         }
 
         $this->orderItemRepository->bulkInsert($orderItemsToCreate);
-        $this->productRepository->decreaseStock($stockChange , array_keys($stockChange));
+        $this->productRepository->decreaseStock($stockChange, array_keys($stockChange));
     }
 
     private function validateStock($orderItem, array $idToProductMapping)
@@ -59,7 +56,7 @@ class InsertOrderItemsAction
             'quantity' => $orderItem->quantity,
             'price' => $idToProductMapping[$orderItem->product_id]['price'],
             'created_at' => now(),
-            'updated_at' => now()
+            'updated_at' => now(),
         ];
     }
 }

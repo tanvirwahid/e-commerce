@@ -17,7 +17,7 @@ class OrderController extends Controller
     {
         return response()->json([
             'orders' => $action->execute(),
-            'message' => 'Successfully fetched'
+            'message' => 'Successfully fetched',
         ]);
     }
 
@@ -28,19 +28,19 @@ class OrderController extends Controller
                 'order' => $orderAction->execute(
                     OrderData::fromRequest($request)
                 ),
-                'message' => 'Successfully ordered'
+                'message' => 'Successfully ordered',
             ]);
         } catch (NotEnoughInStockException $exception) {
             return response()->json([
                 'data' => [],
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
             ], $exception->getStatusCode());
         } catch (\Exception $exception) {
             Log::error($exception);
 
             return response()->json([
                 'data' => [],
-                'message' => $exception->getMessage()
+                'message' => $exception->getMessage(),
             ], $exception->status ?? JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

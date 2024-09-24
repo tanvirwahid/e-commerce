@@ -18,7 +18,7 @@ class ProductController
     {
         return response()->json([
             'products' => $listProductAction->execute(),
-            'message' => 'SUccessfully fetched'
+            'message' => 'SUccessfully fetched',
         ]);
     }
 
@@ -28,7 +28,7 @@ class ProductController
             'product' => $createProductAction->execute(
                 ProductData::fromRequest($request)
             ),
-            'message' => 'Successfully created'
+            'message' => 'Successfully created',
         ], JsonResponse::HTTP_CREATED);
     }
 
@@ -42,7 +42,7 @@ class ProductController
                 $product,
                 ProductData::fromRequest($request)
             ),
-            'message' => 'Successfully updated'
+            'message' => 'Successfully updated',
         ]);
     }
 
@@ -51,7 +51,7 @@ class ProductController
         $deleteProductAction->execute($product);
 
         return response()->json([
-            'message' => 'Successfully deleted'
+            'message' => 'Successfully deleted',
         ]);
     }
 }

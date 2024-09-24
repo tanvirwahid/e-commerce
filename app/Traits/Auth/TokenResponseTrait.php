@@ -2,9 +2,6 @@
 
 namespace App\Traits\Auth;
 
-use Illuminate\Support\Facades\Log;
-use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
-
 trait TokenResponseTrait
 {
     public function respondWithToken($token)
@@ -12,7 +9,7 @@ trait TokenResponseTrait
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => config('jwt.ttl')  
+            'expires_in' => config('jwt.ttl'),
         ]);
     }
 }
