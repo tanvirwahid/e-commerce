@@ -7,6 +7,7 @@ use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\DTO\OrderData;
 use App\Exceptions\NotEnoughInStockException;
+use App\Models\Order;
 use Illuminate\Support\Facades\DB;
 
 class PlaceOrderAction
@@ -53,7 +54,7 @@ class PlaceOrderAction
         }, 0);
     }
 
-    private function createOrder(OrderData $orderData)
+    private function createOrder(OrderData $orderData): Order
     {
         return $this->orderRepository->create($orderData);
     }
