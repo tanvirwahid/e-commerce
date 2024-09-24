@@ -2,90 +2,62 @@
 
 namespace App\Actions\Orders;
 
-use App\Contracts\Repositories\OrderItemRepositoryInterface;
+use App\Actions\OrderItems\InsertOrderItemsAction;
 use App\Contracts\Repositories\OrderRepositoryInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\DTO\OrderData;
 use App\Exceptions\NotEnoughInStockException;
-use App\Models\Order;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class PlaceOrderAction
 {
     public function __construct(
         private OrderRepositoryInterface   $orderRepository,
-        private ProductRepositoryInterface $productRepository,
-        private OrderItemRepositoryInterface $orderItemRepository
+        private InsertOrderItemsAction     $insertOrderItemsAction,
+        private ProductRepositoryInterface $productRepository
     )
     {
     }
 
     public function execute(OrderData $orderData)
     {
-        $productIds = array_map(function ($orderItem) {
-            return $orderItem->product_id;
-        }, $orderData->order_items);
-
-        $newStocks = [];
-        $orderItemsToCreate = [];
-
+        $productIds = $this->extractProductIds($orderData->order_items);
         DB::beginTransaction();
 
         try {
-            $products = $this->productRepository->lockAndGetIdToProductMapping($productIds);
-            $orderData->total_amount = $this->getTotalAmount($orderData->order_items, $products);
+            $idToProductMapping = $this->productRepository->lockAndGetIdToProductMapping($productIds);
+            $orderData->total_amount = $this->calculateTotalAmount($orderData->order_items, $idToProductMapping);
 
-            $order = $this->orderRepository->create($orderData);
-
-            foreach ($orderData->order_items as $orderItem) {
-                $product = $products[$orderItem->product_id];
-
-                if ($product['stock'] < $orderItem->quantity) {
-                    throw new NotEnoughInStockException(
-                        $product['name'] . ' does not have enough in stock',
-                        JsonResponse::HTTP_UNPROCESSABLE_ENTITY
-                    );
-                }
-
-                $newStocks[$orderItem->product_id] = $orderItem->quantity;
-
-                $orderItemsToCreate[] = [
-                    'order_id' => $order->id,
-                    'product_id' => $orderItem->product_id,
-                    'quantity' => $orderItem->quantity,
-                    'price' => $products[$orderItem->product_id]['price'],
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
-
-            $this->orderItemRepository->bulkInsert($orderItemsToCreate);
-            $this->productRepository->decreaseStock($newStocks, $productIds);
+            $order = $this->createOrder($orderData);
+            $this->insertOrderItemsAction->execute($order, $orderData->order_items, $idToProductMapping);
 
             DB::commit();
 
             return $order->load('items');
-        } catch (NotEnoughInStockException $exception)
-        {
+        } catch (NotEnoughInStockException $exception) {
             DB::rollBack();
             throw $exception;
-        } catch (\Exception $exception)
-        {
+        } catch (\Exception $exception) {
             DB::rollBack();
             throw $exception;
         }
     }
 
-    private function getTotalAmount(array $orderItems, array $products): float
+    private function extractProductIds(array $orderItems): array
     {
-        $sum = 0;
-
-        foreach ($orderItems as $orderItem) {
-            $sum += ($orderItem->quantity * $products[$orderItem->product_id]['price']);
-        }
-
-        return $sum;
+        return array_map(fn($item) => $item->product_id, $orderItems);
     }
+
+    private function calculateTotalAmount(array $orderItems, array $idToProductMapping): float
+    {
+        return array_reduce($orderItems, function ($sum, $orderItem) use ($idToProductMapping) {
+            return $sum + ($orderItem->quantity * $idToProductMapping[$orderItem->product_id]['price']);
+        }, 0);
+    }
+
+    private function createOrder(OrderData $orderData)
+    {
+        return $this->orderRepository->create($orderData);
+    }
+
 }
