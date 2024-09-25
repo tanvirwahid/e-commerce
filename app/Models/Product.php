@@ -9,6 +9,9 @@ class Product extends Model
 {
     use HasFactory;
 
+    const CACHE_TTL = 60 * 6;
+    const PER_PAGE = 10;
+
     protected $fillable = [
         'name',
         'price',

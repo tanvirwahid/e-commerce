@@ -2,9 +2,10 @@
 
 namespace App\Actions\Products;
 
+use App\Contracts\ListProductActionInterface;
 use App\Contracts\Repositories\ProductRepositoryInterface;
 
-class ListProductAction
+class ListProductAction implements ListProductActionInterface
 {
     public function __construct(
         private ProductRepositoryInterface $productRepository
