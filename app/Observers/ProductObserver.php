@@ -23,7 +23,7 @@ class ProductObserver
         $this->creationCacheInvalidator->invalidateCache();
     }
 
-    public function updated(Product $product)
+    public function updating(Product $product)
     {
         $this->updateCacheInvalidator->invalidateCache($product);
     }
