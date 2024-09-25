@@ -83,7 +83,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function getPositionFromId(int $id): int
     {
-        return Product::where('id', '<=', $id)
+        return Product::where('id', '>=', $id)
             ->count();
     }
 }
