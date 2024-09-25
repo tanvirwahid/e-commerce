@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 class PlaceOrderAction
 {
     public function __construct(
+        private Order $order,
         private OrderRepositoryInterface $orderRepository,
         private InsertOrderItemsAction $insertOrderItemsAction,
         private ProductRepositoryInterface $productRepository
@@ -27,12 +28,11 @@ class PlaceOrderAction
             $idToProductMapping = $this->productRepository->lockAndGetIdToProductMapping($productIds);
             $orderData->total_amount = $this->calculateTotalAmount($orderData->order_items, $idToProductMapping);
 
-            $order = $this->createOrder($orderData);
-            $this->insertOrderItemsAction->execute($order, $orderData->order_items, $idToProductMapping);
+            $this->order = $this->createOrder($orderData);
+            $this->insertOrderItemsAction->execute($this->order, $orderData->order_items, $idToProductMapping);
 
             DB::commit();
 
-            return $order->load('items');
         } catch (NotEnoughInStockException $exception) {
             DB::rollBack();
             throw $exception;
@@ -40,6 +40,8 @@ class PlaceOrderAction
             DB::rollBack();
             throw $exception;
         }
+
+        return $this->order->load('items');
     }
 
     private function extractProductIds(array $orderItems): array
