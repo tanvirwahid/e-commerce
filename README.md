@@ -19,7 +19,7 @@ ADMIN_EMAIL=
 
 ADMIN_PASSWORD=
 
-These will be default name, email and password of default admin. If these are empty then default admin's name, email and password will be admin, admin@demo.com, aaaaaa
+These will be name, email and password of the default admin. If these are empty then default admin's name, email and password will be admin, admin@demo.com, aaaaaa
 
 7) Fill out appropriate CACHE_STORE.
 8) Save and close .env and run 'php artisan config:cache', 'php artisan key:generate', 'php artisan jwt:secret', 'php artisan migrate', 'php artisan db:seed' and 'php artisan serve'.
