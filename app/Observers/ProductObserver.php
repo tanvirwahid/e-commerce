@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Actions\Products\ListCachedProductAction;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class ProductObserver
 {
@@ -20,5 +21,15 @@ class ProductObserver
         {
             Cache::forget('products_'.Product::PER_PAGE. '_'. $cachePageNo);
         }
+    }
+
+    public function saving(Product $product)
+    {
+        $position = Product::where('id', '<=', $product->id)
+            ->count();
+        $pageNo = ceil($position / Product::PER_PAGE);
+        Log::info($pageNo);
+
+        Cache::forget('products_'.Product::PER_PAGE. '_'. $pageNo);
     }
 }
