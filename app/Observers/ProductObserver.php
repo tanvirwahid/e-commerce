@@ -3,33 +3,28 @@
 namespace App\Observers;
 
 use App\Actions\Products\ListCachedProductAction;
+use App\CacheInvalidators\ProductCreationCacheInvalidator;
+use App\CacheInvalidators\ProductUpdateCacheInvalidator;
 use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class ProductObserver
 {
-    public function created(Product $product)
+    public function __construct(
+        private ProductCreationCacheInvalidator $creationCacheInvalidator,
+        private ProductUpdateCacheInvalidator   $updateCacheInvalidator
+    )
     {
-        $key = ListCachedProductAction::PRODUCT_PAGES_CACHE_KEY;
-
-        $allCachedPages = Cache::get($key);
-        
-        $cachedPages = $allCachedPages ? $allCachedPages : [];
-
-        foreach($cachedPages as $cachePageNo)
-        {
-            Cache::forget('products_'.Product::PER_PAGE. '_'. $cachePageNo);
-        }
     }
 
-    public function saving(Product $product)
+    public function creating()
     {
-        $position = Product::where('id', '<=', $product->id)
-            ->count();
-        $pageNo = ceil($position / Product::PER_PAGE);
-        Log::info($pageNo);
+        $this->creationCacheInvalidator->invalidateCache();
+    }
 
-        Cache::forget('products_'.Product::PER_PAGE. '_'. $pageNo);
+    public function updated(Product $product)
+    {
+        $this->updateCacheInvalidator->invalidateCache($product);
     }
 }

@@ -4,6 +4,8 @@ namespace App\Repositories;
 
 use App\Contracts\Repositories\ProductRepositoryInterface;
 use App\DTO\ProductData;
+use App\Entities\Products\ProductIds;
+use App\Entities\Products\ProductPositions;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
@@ -36,15 +38,10 @@ class ProductRepository implements ProductRepositoryInterface
         return $product;
     }
 
-    public function delete(Product $product)
-    {
-        $product->delete();
-    }
-
-    public function lockAndGetIdToProductMapping(array $productIds): array
+    public function lockAndGetIdToProductMapping(ProductIds $productIds): array
     {
         return Product::lockForUpdate()
-            ->whereIn('id', $productIds)
+            ->whereIn('id', $productIds->getProductIds())
             ->get()
             ->mapWithKeys(function ($product) {
                 return [$product->id => $product];
@@ -68,5 +65,25 @@ class ProductRepository implements ProductRepositoryInterface
                 END
             WHERE id IN ($productIdsString)
         ");
+    }
+
+    public function getBulkPositions(ProductIds $productIds): ProductPositions
+    {
+        return new ProductPositions(
+            Product::from('products as p1')
+                ->leftJoin('products as p2', 'p2.id', '>=', 'p1.id')
+                ->select('p1.id', DB::raw('COUNT(p2.id) as count'))
+                ->whereIn('p1.id', $productIds->getProductIds())
+                ->groupBy('p1.id')
+                ->get()
+                ->pluck('count')
+                ->toArray()
+        );
+    }
+
+    public function getPositionFromId(int $id): int
+    {
+        return Product::where('id', '<=', $id)
+            ->count();
     }
 }

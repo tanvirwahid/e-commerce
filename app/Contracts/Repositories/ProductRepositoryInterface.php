@@ -3,6 +3,8 @@
 namespace App\Contracts\Repositories;
 
 use App\DTO\ProductData;
+use App\Entities\Products\ProductIds;
+use App\Entities\Products\ProductPositions;
 use App\Models\Product;
 
 interface ProductRepositoryInterface
@@ -13,9 +15,11 @@ interface ProductRepositoryInterface
 
     public function update(Product $product, ProductData $productData): Product;
 
-    public function delete(Product $product);
-
-    public function lockAndGetIdToProductMapping(array $productIds): array;
+    public function lockAndGetIdToProductMapping(ProductIds $productIds): array;
 
     public function decreaseStock(array $stockData, array $productIds);
+
+    public function getBulkPositions(ProductIds $productIds): ProductPositions;
+
+    public function getPositionFromId(int $id): int;
 }

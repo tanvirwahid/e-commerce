@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Apis;
 
 use App\Actions\Products\CreateProductAction;
-use App\Actions\Products\DeleteProductAction;
 use App\Actions\Products\UpdateProductAction;
 use App\Contracts\ListProductActionFactoryInterface;
 use App\DTO\ProductData;
@@ -47,12 +46,4 @@ class ProductController
         ]);
     }
 
-    public function destroy(Product $product, DeleteProductAction $deleteProductAction)
-    {
-        $deleteProductAction->execute($product);
-
-        return response()->json([
-            'message' => 'Successfully deleted',
-        ]);
-    }
 }
