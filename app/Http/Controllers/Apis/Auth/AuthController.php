@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $user = $userCreationAction->execute(
             UserData::fromRequest($request),
-            'user'
+            $request->get('is_admin') ? 'admin' : 'user'
         );
 
         return response()->json($user, JsonResponse::HTTP_CREATED);

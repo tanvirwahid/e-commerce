@@ -25,6 +25,7 @@ class RegistrationRequest extends FormRequest
             'name' => 'required|string',
             'email' => 'required|unique:users,email',
             'password' => 'required|confirmed',
+            'is_admin' => 'required|boolean'
         ];
     }
 }
