@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Apis;
 
 use App\Actions\Products\CreateProductAction;
 use App\Actions\Products\DeleteProductAction;
-use App\Actions\Products\ListProductAction;
 use App\Actions\Products\UpdateProductAction;
+use App\Contracts\ListProductActionFactoryInterface;
 use App\DTO\ProductData;
 use App\Http\Requests\CreateProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -14,10 +14,11 @@ use Illuminate\Http\JsonResponse;
 
 class ProductController
 {
-    public function index(ListProductAction $listProductAction)
-    {
+    public function index(
+        ListProductActionFactoryInterface $listProductActionFactory,
+    ) {
         return response()->json([
-            'products' => $listProductAction->execute(),
+            'products' => $listProductActionFactory->getListProductAction()->execute(),
             'message' => 'SUccessfully fetched',
         ]);
     }

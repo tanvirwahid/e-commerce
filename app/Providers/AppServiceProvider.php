@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Actions\Products\Factories\ListProductActionFactory;
+use App\Contracts\ListProductActionFactoryInterface;
+use App\Models\Product;
+use App\Observers\ProductObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +15,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            ListProductActionFactoryInterface::class,
+            ListProductActionFactory::class
+        );
     }
 
     /**
@@ -19,6 +26,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
     }
 }

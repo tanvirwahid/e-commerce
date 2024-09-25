@@ -13,7 +13,7 @@ class ProductRepository implements ProductRepositoryInterface
 
     public function index()
     {
-        return $this->product->paginate(10);
+        return $this->product->latest()->paginate(10);
     }
 
     public function create(ProductData $productData): Product
