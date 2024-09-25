@@ -24,6 +24,7 @@ class ProductRepository implements ProductRepositoryInterface
             'name' => $productData->name,
             'price' => $productData->price,
             'stock' => $productData->stock,
+            'created_by' => $productData->created_by
         ]);
     }
 

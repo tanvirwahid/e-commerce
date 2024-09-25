@@ -19,5 +19,6 @@ class Product extends Model
         'name',
         'price',
         'stock',
+        'created_by'
     ];
 }

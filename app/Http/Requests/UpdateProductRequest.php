@@ -11,7 +11,9 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $product = $this->route('product');
+
+        return $product->created_by == auth()->id();
     }
 
     /**
